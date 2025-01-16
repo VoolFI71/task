@@ -1,2 +1,2 @@
 class Config:
-    URL = "sqlite:///test.db"
+    URL = "postgresql+asyncpg://postgres:1234@localhost/postgres"
