@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
+from fastapi import HTTPException
 
 SECRET_KEY = "123"
 ALGORITHM = "HS256" 
@@ -17,10 +18,10 @@ def decode_access_token(token: str):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
-    except jwt.PyJWTError:
+    except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
-    except:
-        pass
+    except Exception as e:
+        raise HTTPException(status_code=401, detail=f"Token decoding error: {str(e)}")
 
 def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     to_encode = data.copy()

@@ -9,3 +9,4 @@ class User(Base):
     username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
     hash_password: Mapped[str] = mapped_column(String, nullable=False)
     balance: Mapped[int] = mapped_column(Integer, default=0) 
+
