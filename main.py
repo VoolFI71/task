@@ -14,19 +14,19 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 DATABASE_URL = Config.URL
 
-engine = create_async_engine(DATABASE_URL, echo=False)
-SessionLocal =  async_sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(DATABASE_URL, echo=False)
+SessionLocal =  sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 
-async def get_db() -> AsyncSession:
-    async with SessionLocal() as session:
+def get_db() -> Session:
+    with SessionLocal() as session:
         yield session
 
 @app.post("/register")
-async def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
+def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
-    result = await db.execute(select(User).filter(User.username == user.username))
+    result = db.execute(select(User).filter(User.username == user.username))
     db_user = result.scalars().first()
     if db_user:
         raise HTTPException(status_code=400, detail="Такое имя пользователя уже существует")
@@ -35,8 +35,8 @@ async def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = User(username=user.username, hash_password=hash_password)
     
     db.add(db_user)
-    await db.commit()
-    await db.refresh(db_user)
+    db.commit()
+    db.refresh(db_user)
     
     return {
         "id": db_user.id,
@@ -45,8 +45,8 @@ async def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 @app.post("/login")
-async def login(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    result = await db.execute(select(User).filter(User.username == user.username))
+def login(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    result = db.execute(select(User).filter(User.username == user.username))
     db_user = result.scalars().first()
     
     if not db_user or not auth.verify_password(user.password, db_user.hash_password):
@@ -59,14 +59,14 @@ async def login(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 
 @app.post("/change")
-async def change_password(change_password: schemas.ChangePassword, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+def change_password(change_password: schemas.ChangePassword, db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     payload = auth.decode_access_token(token)
     username = payload.get("sub")
 
     if username is None:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    result = await db.execute(select(User).filter(User.username == username))
+    result = db.execute(select(User).filter(User.username == username))
     db_user = result.scalars().first()
     
     if not db_user:
@@ -78,6 +78,6 @@ async def change_password(change_password: schemas.ChangePassword, db: Session =
     hash_new_password = auth.create_hash_password(change_password.new_password)
     
     db_user.hash_password = hash_new_password
-    await db.commit()
+    db.commit()
     
     return {"detail": "Пароль успешно сменён"}
