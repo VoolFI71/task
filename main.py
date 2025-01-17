@@ -98,7 +98,7 @@ async def change_password(change_password: schemas.ChangePassword, db: AsyncSess
     hash_new_password = auth.create_hash_password(change_password.new_password)
     
     db_user.hash_password = hash_new_password
-    await db.commit()  # Асинхронный коммит
+    await db.commit()
 
     logging.info("Пароль успешно сменён для пользователя: %s", username)
 
