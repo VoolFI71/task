@@ -1,11 +1,11 @@
-from datetime import datetime, timedelta
-from jose import JWTError, jwt
 from passlib.context import CryptContext
+from jose import jwt, JWTError
 from fastapi import HTTPException
+from datetime import datetime, timedelta
 from config.settings import Cfg
-
 SECRET_KEY = Cfg.SECRET_KEY
-ALGORITHM = "HS256" 
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 1
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
