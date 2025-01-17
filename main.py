@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import create_engine
-from core.services.auth import schemas, auth
+from core.auth import schemas, auth
 from core.models.user import User
 from config.settings import Cfg
 from fastapi.security import OAuth2PasswordBearer
