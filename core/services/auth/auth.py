@@ -3,6 +3,7 @@ from jose import jwt, JWTError
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 from config.settings import Cfg
+
 SECRET_KEY = Cfg.SECRET_KEY
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 1
