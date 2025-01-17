@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy import create_engine
 from core.services.auth import schemas, auth
 from core.models.user import User
-from config.settings import Config
+from config.settings import Cfg
 from fastapi.security import OAuth2PasswordBearer
 from datetime import timedelta
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
@@ -12,7 +12,7 @@ from sqlalchemy.future import select
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-DATABASE_URL = Config.URL
+DATABASE_URL = Cfg.URL
 
 engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal =  sessionmaker(autocommit=False, autoflush=False, bind=engine)

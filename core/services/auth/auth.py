@@ -2,8 +2,9 @@ from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import HTTPException
+from config.settings import Cfg
 
-SECRET_KEY = "123"
+SECRET_KEY = Cfg.SECRET_KEY
 ALGORITHM = "HS256" 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
